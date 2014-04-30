@@ -4,7 +4,9 @@ import csv
 features_list=["customer_ID", "day", "state",  "group_size","homeowner","car_age", "age_oldest", "age_youngest","married_couple","C_previous"]
 target_list = ["A","B","C","D","E","F","G"]
 #target_list = ["A","B"]
-
+#set thsi flag to 1 if you want to include previous values
+usePrevious = 0
+useFirst=0
 header_map = {}
 
 test_file = "data/test_v2_first_0_last_1.csv"
@@ -15,10 +17,16 @@ def first_feature (row, target, test):
     features={}
     for item in features_list:
         features[item]=row[header_map[item]]
-    if test==0:
-        features["previous"]=row[header_map["prev_actual_%s"%target]]
-    else:
-        features["previous"]=row[header_map["%s"%target]]
+    if usePrevious==1:
+        if test==0:
+            features["previous"]=row[header_map["prev_actual_%s"%target]]
+        else:
+            features["previous"]=row[header_map["%s"%target]]
+    if useFirst==1:
+#        if test==0:
+        features["first"]=row[header_map["1_actual_%s"%target]]
+#        else:
+#            features["first"]=row[header_map["%s"%target]]
     return features
 
 def loadHeader(row):
