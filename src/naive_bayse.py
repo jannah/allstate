@@ -5,13 +5,13 @@ from collections import Counter
 features_list=["customer_ID", "day", "state",  "group_size","homeowner","car_age", "age_oldest", "age_youngest","married_couple","C_previous"]
 target_list = ["A","B","C","D","E","F","G"]
 target_feature_list = {
-'A':["day","state","group_size","homeowner","car_age", "age_oldest", "age_youngest","married_couple"],
-'B':["day","state","group_size","homeowner","car_age", "age_oldest", "age_youngest","married_couple"],
-'C':["day","state","group_size","homeowner","car_age", "age_oldest", "age_youngest","married_couple","C_previous"],
-'D':["day","state","group_size","homeowner","car_age", "age_oldest", "age_youngest","married_couple",],
-'E':["day","state","group_size","homeowner","car_age", "age_oldest", "age_youngest","married_couple","C_previous"],
-'F':["day","state","group_size","homeowner","car_age", "age_oldest", "age_youngest","married_couple",],
-'G':["day","state","group_size","homeowner","car_age", "age_oldest", "age_youngest","married_couple",]}
+'A':["day","state","group_size","car_value","risk_factor","homeowner","car_age", "age_oldest", "age_youngest","married_couple"],
+'B':["day","state","group_size","car_value","risk_factor","homeowner","car_age", "age_oldest", "age_youngest","married_couple"],
+'C':["day","state","group_size","car_value","risk_factor","homeowner","car_age", "age_oldest", "age_youngest","married_couple","C_previous"],
+'D':["day","state","group_size","car_value","risk_factor","homeowner","car_age", "age_oldest", "age_youngest","married_couple",],
+'E':["day","state","group_size","car_value","risk_factor","homeowner","car_age", "age_oldest", "age_youngest","married_couple","C_previous"],
+'F':["day","state","group_size","car_value","risk_factor","homeowner","car_age", "age_oldest", "age_youngest","married_couple",],
+'G':["day","state","group_size","car_value","risk_factor","homeowner","car_age", "age_oldest", "age_youngest","married_couple",]}
 #target_list = ["A","B"]
 #set thsi flag to 1 if you want to include previous values
 usePrevious = 1
@@ -20,9 +20,9 @@ header_map = {}
 
 test_file = "data/test_v2_first_0_last_1.csv"
 train_file = "data/train_first_0_last_1.csv"
-output_file = "data/NB_output.csv"
-bucket_car_age=0
-bucket_ages = 0
+output_file = "data/NB_output_bucket.csv"
+bucket_car_age=1
+bucket_ages = 1
 def get_car_age_bucket(value):
     value2 =(int(value)-1)/6+1
 #   print "%s\t%s"%(value,value2)
