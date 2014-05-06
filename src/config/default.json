@@ -1,0 +1,8 @@
+{
+        "A":["cost", "day", "state", "group_size", "car_value", "risk_factor", "homeowner", "car_age", "age_oldest", "age_youngest", "married_couple", "previous"],
+        "B":["cost", "day", "state", "group_size", "car_value", "risk_factor", "homeowner", "car_age", "age_oldest", "age_youngest", "married_couple", "previous"],
+        "C":["cost", "day", "state", "group_size", "car_value", "risk_factor", "homeowner", "car_age", "age_oldest", "age_youngest", "married_couple", "C_previous", "previous"],
+        "D":["cost", "day", "state", "group_size", "car_value", "risk_factor", "homeowner", "car_age", "age_oldest", "age_youngest", "married_couple", "previous"],
+        "E":["cost", "day", "state", "group_size", "car_value", "risk_factor", "homeowner", "car_age", "age_oldest", "age_youngest", "married_couple", "C_previous", "previous"],
+        "F":["cost", "day", "state", "group_size", "car_value", "risk_factor", "homeowner", "car_age", "age_oldest", "age_youngest", "married_couple", "previous"],
+        "G":["cost", "day", "state", "group_size", "car_value", "risk_factor", "homeowner", "car_age", "age_oldest", "age_youngest", "married_couple", "previous"]}

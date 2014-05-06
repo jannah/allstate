@@ -1,0 +1,7 @@
+{"A":["day","state","group_size","homeowner","car_age","age_oldest","age_youngest","married_couple","C_previous","previous"],
+"C":["day","group_size","homeowner","car_age","age_oldest","age_youngest","married_couple","C_previous","previous"],
+"B":["day","state","group_size","homeowner","car_age","age_oldest","age_youngest","married_couple","C_previous","previous"],
+"E":["day","state","group_size","homeowner","car_age","age_oldest","age_youngest","married_couple","C_previous","previous"],
+"D":["day","state","group_size","homeowner","car_age","age_oldest","age_youngest","married_couple","C_previous","previous"],
+"G":["day","group_size","homeowner","car_age","age_oldest","age_youngest","married_couple","C_previous","previous"],
+"F":["day","state","group_size","homeowner","car_age","age_oldest","age_youngest","married_couple","C_previous","previous"]}

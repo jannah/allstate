@@ -8,28 +8,34 @@ __author__="Hassan"
 __date__ ="$Apr 10, 2014 4:55:44 PM$"
 
 import csv
-target_cols=['A','B','C','D','E','F','G','C_previous']
+target_cols=['A','B','C','D','E','F','G','C_previous', "cost"]
 demo_cols=['homeowner','group_size','age_oldest','age_youngest','married_couple']
 
 head_str = []
-change_over_limit=1
+last_entries=1
 first_entries =0
+fold_previous = 2
+fold_first =0
+include_deltas = 0
 #last_1=[]
 #last_2=[]
-#last_entry=[[]]*change_over_limit
-output=[[]]*(change_over_limit+first_entries)
-#for i in range(0,change_over_limit):
+#last_entry=[[]]*last_entries
+output=[[]]*(last_entries+first_entries)
+#for i in range(0,last_entries):
 #    last_entry.append([])
-#filename = "train"
+filename = "train"
 #filename="test_train"
-filename="test_v2"
-f = open('data/%s_change.csv'%filename,'w')
-last = open('data/%s_first_%s_last_%s.csv'%(filename,first_entries,change_over_limit),'w')
+write_change = 0
+#filename="test_v2"
+if write_change ==1:
+    f = open('data/%s_change.csv'%filename,'w')
+last = open('data/%s_first_%s_last_%s_2.csv'%(filename,first_entries,last_entries),'w')
 with open('data/%s.csv'%filename, 'rb') as csvfile:
     reader = csv.reader(csvfile, delimiter=',', quotechar='|')
     row_count=0
     header={}
     previous_row = ""
+    previous_rows=[[]]*fold_previous
     previous_id = ""
     first_row = ""
     second_row = ""
@@ -51,25 +57,30 @@ with open('data/%s.csv'%filename, 'rb') as csvfile:
                 head_count+=1
                 head_str.append(head)
             for col in target_cols:
-                header["prev_%s"%col]=head_count
-                head_count+=1
-                head_str.append("prev_%s"%col)
-#            for col in target_cols:
-                header["d1_%s"%col]=head_count
-                head_count+=1
-                head_str.append("d1_%s"%col)
-                header["1_actual_%s"%col]=head_count
-                head_count+=1
-                head_str.append("1_actual_%s"%col)
-                header["d2_%s"%col]=head_count
-                head_count+=1
-                head_str.append("d2_%s"%col)
-                header["prev_actual_%s"%col]=head_count
-                head_count+=1
-                head_str.append("prev_actual_%s"%col)
+                for inc_first in range(0, fold_first):
+                    temp_head = "first_%s_%s"%(inc_first,col)
+                    header[temp_head]=head_count
+                    head_count+=1
+                    head_str.append(temp_head)
+                    if include_deltas:
+                        temp_head = "delta_first_%s_%s"%(inc_first,col)
+                        header[temp_head]=head_count
+                        head_count+=1
+                        head_str.append(temp_head)
+                for inc_prev in range(0, fold_previous):
+                    temp_head = "prev_%s_%s"%(inc_prev,col)
+                    header[temp_head]=head_count
+                    head_count+=1
+                    head_str.append(temp_head)
+                    if include_deltas:
+                        temp_head = "delta_prev_%s_%s"%(inc_prev,col)
+                        header[temp_head]=head_count
+                        head_count+=1
+                        head_str.append(temp_head)
             head_str.append("order")
             print "%s\n"% ",".join(head_str)
-            f.write("%s\n"% ",".join(head_str))
+            if write_change==1:
+                f.write("%s\n"% ",".join(head_str))
             last.write("%s\n"% ",".join(head_str))
         else:
             outputs = {}
@@ -78,11 +89,8 @@ with open('data/%s.csv'%filename, 'rb') as csvfile:
 #            copy_row.append("")
 #            copy_row.append("")
             for col in target_cols:
-                copy_row.append("")
-                copy_row.append("")
-                copy_row.append("")
-                copy_row.append("")
-                copy_row.append("")
+                for temp in range(0, fold_previous+fold_first+include_deltas*(fold_previous+fold_first)):
+                    copy_row.append("")
             if customer_id<>previous_id:
                 sub_row=1
 #            for demo in demo_cols:
@@ -93,12 +101,16 @@ with open('data/%s.csv'%filename, 'rb') as csvfile:
 #                        print "reset for %s on %s at %s"%(customer_id,demo, shopping_pt)
 #                demo_id_old = header["prev_%s"%demo]
             for col in target_cols:
+                
                 col_id = header[col]
-                col_id_old = header["prev_%s"%col]
-                col_id1 = header["d1_%s"%col]
-                col_id1_actual = header["1_actual_%s"%col]
-                col_id2 = header["d2_%s"%col]
-                col_id_prev_actual = header["prev_actual_%s"%col]
+                prev_col_ids = []*fold_previous
+                for prev_rows in range(0, fold_previous):
+                    prev_col_ids.append(header["prev_%s_%s"%(prev_rows,col)])
+#                col_id_old = header["prev_%s"%col]
+#                col_id1 = header["d1_%s"%col]
+#                col_id1_actual = header["1_actual_%s"%col]
+#                col_id2 = header["d2_%s"%col]
+#                col_id_prev_actual = header["prev_actual_%s"%col]
                 val = 0
                 val1 = 0
                 val2 = 0
@@ -110,14 +122,21 @@ with open('data/%s.csv'%filename, 'rb') as csvfile:
                         val1=1
                     if len(second_row)>0 and row[col_id]<>second_row[col_id]:
                         val2=1
-                copy_row[col_id_old]= "%s"% val
-                copy_row[col_id1]= "%s"% val1
-                copy_row[col_id2]= "%s"% val2
-                if len(previous_row)>0:
-                    copy_row[col_id_prev_actual]="%s"%previous_row[col_id]
-                if len(first_row)>0:
-                    copy_row[col_id1_actual]="%s"%first_row[col_id]
-            f.write("%s\n"% (",".join(copy_row)))
+#                copy_row[col_id_old]= "%s"% val
+#                copy_row[col_id1]= "%s"% val1
+#                copy_row[col_id2]= "%s"% val2
+                for prev_rows in range(0, fold_previous):
+                    if len(previous_rows[prev_rows])>0:
+#                        print copy_row[prev_col_ids[prev_rows]]
+#                        print prev_col_ids[prev_rows]
+#                        print previous_rows[prev_rows]
+                        copy_row[prev_col_ids[prev_rows]]="%s"%previous_rows[prev_rows][col_id]
+#                if len(previous_row)>0:
+#                    copy_row[col_id_prev_actual]="%s"%previous_row[col_id]
+#                if len(first_row)>0:
+#                    copy_row[col_id1_actual]="%s"%first_row[col_id]
+            if write_change==1:
+                f.write("%s\n"% (",".join(copy_row)))
             shopping_pt = row[header['shopping_pt']]
             if (shopping_pt=="1" or row_count==total_rows):
                 out_len = len(output)
@@ -128,9 +147,9 @@ with open('data/%s.csv'%filename, 'rb') as csvfile:
                             output[i]=list(copy_row)
                             done=1
                     if done==0:
-                        for i in range(0,change_over_limit-1):
+                        for i in range(0,last_entries-1):
                             output[first_entries+i]=output[first_entries+i+1]
-                        output[first_entries+change_over_limit-1]=list(copy_row)
+                        output[first_entries+last_entries-1]=list(copy_row)
                     output[out_len-1]=list(copy_row)
                 sub_row=1
                 count_printed=1
@@ -172,10 +191,12 @@ with open('data/%s.csv'%filename, 'rb') as csvfile:
                     i=i+2
                     if sub_row==i:
                         output[i-1]=list(copy_row)
-                for i in range(0,change_over_limit-1):
+                for i in range(0,last_entries-1):
                     output[first_entries+i]=output[first_entries+i+1]
-                output[first_entries+change_over_limit-1]=list(copy_row)
+                output[first_entries+last_entries-1]=list(copy_row)
             previous_row = row
+            previous_rows[1]=list(previous_rows[0])
+            previous_rows[0] = list(row)
             previous_id = row[0]
         
 #    count_printed=1
