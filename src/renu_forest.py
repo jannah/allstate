@@ -11,10 +11,11 @@ from sklearn.feature_extraction import DictVectorizer
 # use a small amount of testdata (10 rows):"playtest_v2_first_0_last_1.csv"
 # final test_file ="test_v2_first_0_last_1.csv"
 
+####
 
 # SAMPLE DATA SET (small training and test)
-#train_file = "playtrain_first_0_last_1.csv"
-#test_file = "playtest_v2_first_0_last_1.csv"
+train_file = "playtrain_first_0_last_1.csv"
+test_file = "playtest_v2_first_0_last_1.csv"
 
 # SAMPLE DATA SET 1000 rows training and test
 #train_file = "playtrain1000_first_0_last_1.csv"
@@ -25,14 +26,12 @@ from sklearn.feature_extraction import DictVectorizer
 #test_file = "playtest10000_v2_first_0_last_1.csv"
 
 # SAMPLE DATA SET 100,000 rows training and test
-# RENU COMPUTER CHOKED (97K Training rows, 57K test rows)
-train_file = "playtrain100000_first_0_last_1.csv"
-test_file = "playtest100000_v2_first_0_last_1.csv"
-
-# FINAL DATA SET
-#train_file = "train_first_0_last_1.csv"
-#test_file = "test_v2_first_0_last_1.csv"
-
+# NOTE: This has all the data (which is 97K training, 57K test)
+# IS IDENTICAL TO FINAL DATA SET
+# train_file = "train_first_0_last_1.csv"
+# test_file = "test_v2_first_0_last_1.csv"
+#train_file = "playtrain100000_first_0_last_1.csv"
+#test_file = "playtest100000_v2_first_0_last_1.csv"
 
 output_file = "RF_output.csv"
 target_list_names = set(["A","B","C","D","E","F","G"])
@@ -85,6 +84,10 @@ def split_training_set_into_input_and_target(list_dict):
             #2 for time, use only hour (take only first two digits)
             #3 for age_youngest, take only first digit
             #4 for age_oldest, take only first digit
+
+            if eachkey == 'location':
+                eachsample[eachkey] = "90210"
+
 
             if eachkey == 'time':
                 eachsample[eachkey] = eachsample[eachkey][0:2]
@@ -177,6 +180,9 @@ def prepare_test_data(test_list_dict_unprepped):
             #3 for age_youngest, take only first digit
             #4 for age_oldest, take only first digit
 
+            if eachkey == 'location':
+                eachsample[eachkey] = "90210"
+
             if eachkey == 'time':
                 eachsample[eachkey] = eachsample[eachkey][0:2]
             if eachkey == 'cost':
@@ -268,6 +274,7 @@ def PredictOneLetterForAllCustomers(train_input, target_input, test_input, test_
             #if not value[idx] == 1.0:
                 #letter_value = letter_map_list[idx][-1]
         #output_dict[test_customer_ID_list[i]] = outputtemp_dict.keys()
+
         output_dict[test_customer_ID_list[i]] = temp_dict.keys()
 
         #print "test_customer_ID_list[i], output"
@@ -309,55 +316,118 @@ print
 
 #### PREDICT ALL OUTPUTS, ONE LETTER AT A TIME, FOR ALL CUSTOMERS ############
 
+# All the final values will be concatenated into Prediction_dict then saved to file
+Prediction_dict = {}
+
 A_dict = {}
+B_dict = {}
+C_dict = {}
+D_dict = {}
+E_dict = {}
+F_dict = {}
+G_dict = {}
 
 A_dict = PredictOneLetterForAllCustomers(input_list_dict, target_A_list_dict, test_list_dict, test_customer_ID_list)
 
-#PredictOneLetterForAllCustomers(input_list_dict, target_B_list_dict, test_list_dict, test_customer_ID_list)
+B_dict = PredictOneLetterForAllCustomers(input_list_dict, target_B_list_dict, test_list_dict, test_customer_ID_list)
 
-#PredictOneLetterForAllCustomers(input_list_dict, target_C_list_dict, test_list_dict, test_customer_ID_list)
+C_dict = PredictOneLetterForAllCustomers(input_list_dict, target_C_list_dict, test_list_dict, test_customer_ID_list)
 
-##PredictOneLetterForAllCustomers(input_list_dict, target_D_list_dict, test_list_dict, test_customer_ID_list)
-##
-##PredictOneLetterForAllCustomers(input_list_dict, target_E_list_dict, test_list_dict, test_customer_ID_list)
-##
-##PredictOneLetterForAllCustomers(input_list_dict, target_F_list_dict, test_list_dict, test_customer_ID_list)
-##
-##PredictOneLetterForAllCustomers(input_list_dict, target_G_list_dict, test_list_dict, test_customer_ID_list)
+D_dict = PredictOneLetterForAllCustomers(input_list_dict, target_D_list_dict, test_list_dict, test_customer_ID_list)
 
+E_dict = PredictOneLetterForAllCustomers(input_list_dict, target_E_list_dict, test_list_dict, test_customer_ID_list)
 
-# WRITE OUTPUTS FOR NOW TO SEPARATE csv FILES (LATER AUTOMATE WHOLE THING)
+F_dict = PredictOneLetterForAllCustomers(input_list_dict, target_F_list_dict, test_list_dict, test_customer_ID_list)
 
-writer = csv.writer(open('predictions_for_A.csv', 'wb'))
+G_dict = PredictOneLetterForAllCustomers(input_list_dict, target_G_list_dict, test_list_dict, test_customer_ID_list)
+
+# CLEAN UP DATA, GIVE DIFFERENT DEFAULTS TO MISSING PREDICTION VALUES
 for key, value in A_dict.items():
+
+    if value == []:
+        A_dict[key] = "0"
+    else:
+        A_dict[key] = value[0][-1:]
+
+print "A's cleaned"
+
+
+for key, value in B_dict.items():
+
+    if value == []:
+        B_dict[key] = "0"
+    else:
+        B_dict[key] = value[0][-1:]
+
+print "B's cleaned"
+
+
+for key, value in C_dict.items():
+
+    if value == []:
+        C_dict[key] = "1"
+    else:
+        C_dict[key] = value[0][-1:]
+
+print "C's cleaned"
+
+
+for key, value in D_dict.items():
+
+    if value == []:
+        D_dict[key] = "1"
+    else:
+        D_dict[key] = value[0][-1:]
+
+print "D's cleaned"
+
+
+for key, value in E_dict.items():
+
+    if value == []:
+        E_dict[key] = "0"
+    else:
+        E_dict[key] = value[0][-1:]
+
+print "E's cleaned"
+
+
+for key, value in F_dict.items():
+
+    if value == []:
+        F_dict[key] = "0"
+    else:
+        F_dict[key] = value[0][-1:]
+
+print "F's cleaned"
+
+
+for key, value in G_dict.items():
+
+    if value == []:
+        G_dict[key] = "1"
+    else:
+        G_dict[key] = value[0][-1:]
+
+    #############################################################
+    #Concatenate all values into the master Prediction dictionary
+    Prediction_dict[key] = (A_dict[key]+B_dict[key]+C_dict[key]+D_dict[key]
+                            +E_dict[key]+F_dict[key]+G_dict[key])
+
+print "G's cleaned and Prediction_dict created"
+
+
+# WRITE OUTPUT to RF_output.csv
+
+writer = csv.writer(open(output_file, 'wb'))
+writer.writerow(["customer_ID","plan"])
+for key, value in Prediction_dict.items():
     writer.writerow([key, value])
-
-##writer = csv.writer(open('predictions_for_B.csv', 'wb'))
-##for key, value in B_dict.items():
-##    writer.writerow([key, value])
-
-# NEED TO DO SIMPLE CODE TO MAP values (['A=2'] to 2 etc.)
-# ALSO EACH LETTER NEEDS TO DIFFERENTLY SWAP every glitch [] with a 0 or 1 (depends on letter)
-
 
 
 #   As a curiosity, after treating letters separately, try all letters at once!
 #
 #   PredictOneLetterForAllCustomers(input_list_dict, target_list_dict, test_list_dict, test_customer_ID_list)
-
-
-
-# NOTES: DO SEVEN TRAININGS/TESTS/OUTPUTS ####################################
-
-#Should output:
-# one big output with all outputs (dictionary w/ {TestCustomerID: LetterValue}
-
-# reassemble all 7 outputs into
-# customerID, 0212324
-# save as big dictionary {customerID: LetterString}
-
-
-
 
 ### USEFUL LINKS ############################################################
 #
@@ -371,5 +441,9 @@ for key, value in A_dict.items():
 #
 # 3. chance that using integers might work (some debate- I'm wary)
 # http://stackoverflow.com/questions/15821751/how-to-use-dummy-variable-to-represent-categorical-data-in-python-scikit-learn-r
+
+# 4. sckikit learn memory issues with long arrays (removed zip codes to help)
+# skikit learn memory error gvc_mode in linearmodels/ridge.py
+# http://stackoverflow.com/questions/16332083/python-memoryerror-when-doing-fitting-with-scikit-learn
 
 ##############################################################################
