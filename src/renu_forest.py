@@ -11,11 +11,11 @@ from sklearn.feature_extraction import DictVectorizer
 # use a small amount of testdata (10 rows):"playtest_v2_first_0_last_1.csv"
 # final test_file ="test_v2_first_0_last_1.csv"
 
-####
+#### PICK THE TRAINING FILE AND TEST FILE.THE LAST ONES ARE THE FULL SETS ####
 
 # SAMPLE DATA SET (small training and test)
-train_file = "playtrain_first_0_last_1.csv"
-test_file = "playtest_v2_first_0_last_1.csv"
+#train_file = "playtrain_first_0_last_1.csv"
+#test_file = "playtest_v2_first_0_last_1.csv"
 
 # SAMPLE DATA SET 1000 rows training and test
 #train_file = "playtrain1000_first_0_last_1.csv"
@@ -28,10 +28,12 @@ test_file = "playtest_v2_first_0_last_1.csv"
 # SAMPLE DATA SET 100,000 rows training and test
 # NOTE: This has all the data (which is 97K training, 57K test)
 # IS IDENTICAL TO FINAL DATA SET
-# train_file = "train_first_0_last_1.csv"
-# test_file = "test_v2_first_0_last_1.csv"
-#train_file = "playtrain100000_first_0_last_1.csv"
-#test_file = "playtest100000_v2_first_0_last_1.csv"
+# ORIGINAL FILE: train_file = "train_first_0_last_1.csv"
+# ORIGINAL FILE: "test_v2_first_0_last_1.csv"
+train_file = "playtrain100000_first_0_last_1.csv"
+test_file = "playtest100000_v2_first_0_last_1.csv"
+
+#### END OF FOUR FILE SET CHOICES ###########################################
 
 output_file = "RF_output.csv"
 target_list_names = set(["A","B","C","D","E","F","G"])
